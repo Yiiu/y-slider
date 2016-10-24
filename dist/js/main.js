@@ -24,6 +24,9 @@ window.slider = function(el, options){
         delay: 3000,
 
     };
+
+    this.$state = false;         // 幻灯片状态
+
     this.$el = el;
 
     this.options = {};
@@ -33,9 +36,12 @@ window.slider = function(el, options){
      初始执行
      */
     this.init = function (options) {
+        console.log(options);
+
         this$1.current = 0;
         this$1.initDom();
         this$1.initSize();
+        this$1.initNav();
     };
 
     // 初始dom的属性
@@ -78,7 +84,32 @@ window.slider = function(el, options){
 
         return this$1
     };
+    // 初始nav
+    this.initNav = function () {
+        var self = this$1;
+        var nav = document.createElement("nav");
+        nav.className = "y-slider-nav";
+        for(var i = 0; i<this$1.length; i++) {
+            nav.innerHTML += "<a data-nav=\"" + i + "\">" + (i+1) + "</a>";
+        }
+        this$1.$el.appendChild(nav);
+        this$1.$el.nav = nav;
 
+        this$1.$el.nav.children[this$1.current].className = "active";
+
+        this$1.$el.addEventListener("click", function (e) {
+            if(e.target.nodeName === "A") {
+                self.current = e.target.getAttribute("data-nav");
+                self.animation();
+                self.navEvent();
+            }
+        });
+    };
+
+    this.navEvent = function () {
+        this$1.$el.nav.getElementsByClassName("active")[0].removeAttribute("class");
+        this$1.$el.nav.children[this$1.current].className = "active";
+    };
     this.next = function () {
         this$1.current += 1;
 
@@ -91,17 +122,24 @@ window.slider = function(el, options){
     this.prev = function () {
         this$1.current -= 1;
 
-        if(this$1.current <= 0){
-            this$1.current = this$1.length;
+        if(this$1.current < 0){
+            this$1.current = this$1.length - 1;
         }
         return this$1.animation()
     };
 
     this.animation = function () {
-        
-        console.log(this$1.current);
-        
+        this$1.navEvent();
+        this$1.$el.box.style.transition = ".5s transform";
+        this$1.$el.box.style.transform = "translateX(" + (-this$1.$el.offsetWidth * this$1.current) + "px)";
+
+        this$1.$el.box.addEventListener("transitionend", this$1.end);
     };
+
+    this.end = function () {
+        this$1.$el.box.style.transition = "none";
+    };
+
 
     return this.init(options)
 };

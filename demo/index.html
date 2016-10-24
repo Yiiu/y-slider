@@ -27,10 +27,30 @@
 #test .d {
 	width: 100%;
 	height: 200px;
-	background: green;
+	background: blue;
 }
 .y-slider-list {
 	float: left;
+}
+.y-slider-nav {
+	position: relative;
+	bottom: 40px;
+	text-align: center;
+}
+.y-slider-nav a{
+	cursor: pointer;
+	transition: .3s all;
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	font-size: 0;
+	border: 1px solid #fff;
+	border-radius: 100%;
+	margin: 0 6px;
+	
+}
+.y-slider-nav a.active{
+	background: #fff;
 }
 </style>
 <body>
@@ -40,12 +60,20 @@
 		<div class="c"></div>
 		<div class="d"></div>
 	</div>
-	<button id="next">next</button>
 	<button id="prev">prev</button>
+	<button id="next">next</button>
 </body>
 <script src="../dist/js/main.js"></script>
 <script>
 let dom = document.getElementById("test")
 let a = new slider(dom, {})
+let next = document.getElementById("next")
+let prev = document.getElementById("prev")
+next.onclick = function(){
+	a.next()
+}
+prev.onclick = function(){
+	a.prev()
+}
 </script>
 </html>
